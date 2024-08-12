@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 
 interface IDocument {
-  _id: string,
-  data: object
+  _id: string;
+  data: object;
 }
 
 const Document = new Schema<IDocument>({
