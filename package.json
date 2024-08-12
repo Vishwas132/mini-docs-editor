@@ -2,8 +2,16 @@
   "name": "mini-docs-editor",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky",
+    "pre-commit": "lint-staged"
+  },
+  "devDependencies": {
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8",
+    "prettier": "3.3.3"
   },
   "keywords": [],
   "author": "",
