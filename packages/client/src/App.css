@@ -33,6 +33,12 @@ body {
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
 }
 
+.ql-cursor .ql-cursor-flag {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+}
+
 @page {
   margin: 1in;
 }
