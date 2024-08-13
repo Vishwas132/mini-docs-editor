@@ -26,6 +26,10 @@ io.on('connection', socket => {
     socket.on('save-document', async data => {
       await Document.findByIdAndUpdate(documentId, { data });
     });
+
+    socket.on('cursor-move', cursor => {
+      socket.broadcast.to(documentId).emit('receive-cursor', cursor);
+    });
   });
 });
 
