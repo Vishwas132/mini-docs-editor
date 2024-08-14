@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import Quill from './quillConfig';
+import Quill from '../quillConfig';
 import 'quill/dist/quill.snow.css';
 import { io, Socket } from 'socket.io-client';
 import { Delta } from 'quill/core';
 import { useParams } from 'react-router-dom';
 import QuillCursors, { Cursor } from 'quill-cursors';
 import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
+import MenubarDemo from './Menubar';
 
 const SAVE_INTERVAL_MS = 2000;
 
@@ -164,5 +165,10 @@ export default function TextEditor() {
     setEditor({ quill: q, quillCursors: c });
   }, []);
 
-  return <div className="container" ref={wrapperRef}></div>;
+  return (
+    <div>
+      <MenubarDemo />
+      <div className="container" ref={wrapperRef}></div>
+    </div>
+  );
 }
