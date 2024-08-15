@@ -1,24 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
-import Quill from '../quillConfig';
+import Quill from '../../quillConfig';
 import 'quill/dist/quill.snow.css';
 import { io, Socket } from 'socket.io-client';
 import { Delta } from 'quill/core';
 import { useParams } from 'react-router-dom';
 import QuillCursors, { Cursor } from 'quill-cursors';
 import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
-import MenubarDemo from './Menubar';
+import MenubarDemo from '../Menubar/Menubar';
+import './TextEditor.css';
 
 const SAVE_INTERVAL_MS = 2000;
 
 const TOOLBAR_OPTIONS = [
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  [{ font: [] }],
-  [{ list: 'ordered' }, { list: 'bullet' }],
-  ['bold', 'italic', 'underline'],
+  [{ font: [] }, { size: [] }],
+  ['bold', 'italic', 'underline', 'strike'],
   [{ color: [] }, { background: [] }],
-  [{ script: 'sub' }, { script: 'super' }],
-  [{ align: [] }],
-  ['image', 'blockquote', 'code-block'],
+  [{ script: 'super' }, { script: 'sub' }],
+  [{ header: '1' }, { header: '2' }, 'blockquote', 'code-block'],
+  [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+  [{ direction: 'rtl' }, { align: [] }],
+  ['link', 'image', 'video', 'formula'],
   ['clean'],
 ];
 
@@ -166,8 +167,11 @@ export default function TextEditor() {
   }, []);
 
   return (
-    <div>
-      <MenubarDemo />
+    <div style={{ marginLeft: '1rem' }}>
+      <div className="toolbar">
+        <div style={{ padding: '15px 15px 0' }}>New Document</div>
+        <MenubarDemo />
+      </div>
       <div className="container" ref={wrapperRef}></div>
     </div>
   );

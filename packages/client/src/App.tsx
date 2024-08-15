@@ -1,8 +1,7 @@
-import TextEditor from './components/TextEditor.tsx';
+import TextEditor from './components/TextEditor/TextEditor.tsx';
 import { Navigate } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
-import './App.css';
 
 function App() {
   return (

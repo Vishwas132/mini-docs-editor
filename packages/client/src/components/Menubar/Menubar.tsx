@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Menubar from '@radix-ui/react-menubar';
 import { CheckIcon, ChevronRightIcon } from '@radix-ui/react-icons';
-import './styles.css';
+import './Menubar.css';
 
 const CHECK_ITEMS = ['Always Show Bookmarks Bar', 'Always Show Full URLs'];
 
@@ -22,32 +22,30 @@ const MenubarDemo = () => {
             alignOffset={-3}
           >
             <Menubar.Item className="MenubarItem">
-              New Tab <div className="RightSlot">⌘ T</div>
+              New<div className="RightSlot">⌘ T</div>
             </Menubar.Item>
             <Menubar.Item className="MenubarItem">
-              New Window <div className="RightSlot">⌘ N</div>
+              Open <div className="RightSlot">⌘ O</div>
             </Menubar.Item>
-            <Menubar.Item className="MenubarItem" disabled>
-              New Incognito Window
-            </Menubar.Item>
-            <Menubar.Separator className="MenubarSeparator" />
             <Menubar.Sub>
               <Menubar.SubTrigger className="MenubarSubTrigger">
-                Share
+                Download
                 <div className="RightSlot">
                   <ChevronRightIcon />
                 </div>
               </Menubar.SubTrigger>
+
               <Menubar.Portal>
                 <Menubar.SubContent
                   className="MenubarSubContent"
                   alignOffset={-5}
                 >
                   <Menubar.Item className="MenubarItem">
-                    Email Link
+                    Microsoft Word (.docx)
                   </Menubar.Item>
-                  <Menubar.Item className="MenubarItem">Messages</Menubar.Item>
-                  <Menubar.Item className="MenubarItem">Notes</Menubar.Item>
+                  <Menubar.Item className="MenubarItem">
+                    PDF Document (.pdf)
+                  </Menubar.Item>
                 </Menubar.SubContent>
               </Menubar.Portal>
             </Menubar.Sub>
