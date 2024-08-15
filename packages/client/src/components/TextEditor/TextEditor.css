@@ -15,8 +15,8 @@ body {
 .container .ql-editor {
   width: 8.5in;
   min-height: 11in;
-  padding: 1in;
-  margin: 1rem 1rem 0;
+  /* padding: 1in; */
+  margin: 1rem 0;
   border: 1px solid rgb(185, 185, 185);
   background-color: white;
 }
@@ -35,6 +35,7 @@ body {
   z-index: 1;
   background-color: #edf2fa;
   border-radius: 20px;
+  margin: 0 1rem;
 }
 
 .ql-cursor .ql-cursor-flag {

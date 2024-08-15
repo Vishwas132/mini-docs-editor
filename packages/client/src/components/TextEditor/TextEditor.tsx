@@ -8,6 +8,7 @@ import QuillCursors, { Cursor } from 'quill-cursors';
 import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
 import MenubarDemo from '../Menubar/Menubar';
 import './TextEditor.css';
+import Logo from '../../../public/icon-text-editor.png';
 
 const SAVE_INTERVAL_MS = 2000;
 
@@ -167,10 +168,16 @@ export default function TextEditor() {
   }, []);
 
   return (
-    <div style={{ marginLeft: '1rem' }}>
-      <div className="toolbar">
-        <div style={{ padding: '15px 15px 0' }}>New Document</div>
-        <MenubarDemo />
+    <div>
+      <div style={{ display: 'flex', marginLeft: '1rem' }}>
+        <img
+          src={Logo}
+          style={{ width: '40px', height: '40px', marginTop: '15px' }}
+        ></img>
+        <div className="toolbar">
+          <div style={{ padding: '15px 15px 0' }}>New Document</div>
+          <MenubarDemo />
+        </div>
       </div>
       <div className="container" ref={wrapperRef}></div>
     </div>
