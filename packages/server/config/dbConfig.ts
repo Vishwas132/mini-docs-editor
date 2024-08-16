@@ -4,7 +4,7 @@ export async function connectDb() {
   try {
     const connection = (
       await mongoose.connect(
-        process.env.MONGO_URI || 'mongodb://127.0.0.1/mini-docs-editor',
+        process.env.MONGO_URI || 'mongodb://127.0.0.1/mini-docs-editor'
       )
     ).connection;
     connection.on('connection', () => {
