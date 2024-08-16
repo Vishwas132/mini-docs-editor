@@ -6,9 +6,9 @@ import { Delta } from 'quill/core';
 import { useParams } from 'react-router-dom';
 import QuillCursors, { Cursor } from 'quill-cursors';
 import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
-import MenubarDemo from '../Menubar/Menubar';
+import MenubarComponent from '../Menubar/Menubar';
 import './TextEditor.css';
-import Logo from '../../../public/icon-text-editor.png';
+import Logo from '/icon-text-editor.png';
 
 const SAVE_INTERVAL_MS = 2000;
 
@@ -32,6 +32,7 @@ export default function TextEditor() {
   }>();
   const [cursor, setCursor] = useState<Cursor>();
   const { id: documentId } = useParams();
+  const [currentFile, setCurrentFile] = useState<string>('untitled');
 
   useEffect(() => {
     const s = io('http://localhost:3000');
@@ -175,8 +176,15 @@ export default function TextEditor() {
           style={{ width: '40px', height: '40px', marginTop: '15px' }}
         ></img>
         <div className="toolbar">
-          <div style={{ padding: '15px 15px 0' }}>New Document</div>
-          <MenubarDemo />
+          <input
+            style={{ padding: '15px 15px 0' }}
+            defaultValue={currentFile}
+          />
+          <MenubarComponent
+            quill={editor?.quill}
+            currentFile={currentFile}
+            setCurrentFile={setCurrentFile}
+          />
         </div>
       </div>
       <div className="container" ref={wrapperRef}></div>
