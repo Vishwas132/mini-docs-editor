@@ -2,11 +2,6 @@
 @import '@radix-ui/colors/mauve.css';
 @import '@radix-ui/colors/blue.css';
 
-.toolbar {
-  display: flex;
-  flex-direction: column;
-}
-
 /* reset */
 button {
   all: unset;
@@ -15,6 +10,8 @@ button {
 .MenubarRoot {
   display: flex;
   padding: 3px;
+  font-size: 14px;
+  height: 30px;
 }
 
 .MenubarTrigger {

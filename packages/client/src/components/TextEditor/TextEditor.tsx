@@ -165,12 +165,14 @@ export default function TextEditor() {
       <div style={{ display: 'flex', marginLeft: '1rem' }}>
         <img
           src={Logo}
-          style={{ width: '40px', height: '40px', marginTop: '15px' }}
+          style={{ width: '40px', height: '40px', marginTop: '25px' }}
         ></img>
         <div className="toolbar">
           <input
             type="text"
-            style={{ padding: '15px 15px 0' }}
+            className="filename-input"
+            title="Rename"
+            style={{ width: `${fileName.length * 11}px` }}
             value={fileName}
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               setFileName(e.target.value);

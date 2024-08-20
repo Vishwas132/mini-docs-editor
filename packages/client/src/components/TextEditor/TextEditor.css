@@ -63,3 +63,24 @@ body {
     display: none;
   }
 }
+
+.toolbar {
+  margin: 1rem 0;
+}
+
+.filename-input {
+  border: 1px solid transparent;
+  border-radius: 2px !important;
+  font-size: 18px;
+  font-family: monospace;
+  font-variant-ligatures: no-contextual;
+  height: 27px;
+  line-height: 22px;
+  margin: 0;
+  margin-left: 11px;
+  min-width: 1px;
+}
+
+.filename-input:hover {
+  border: 1px solid #3d3c3c;
+}
