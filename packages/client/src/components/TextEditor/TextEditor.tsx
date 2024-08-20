@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import Quill from '../../quillConfig';
 import 'quill/dist/quill.snow.css';
 import { io, Socket } from 'socket.io-client';
@@ -9,8 +9,6 @@ import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
 import MenubarComponent from '../Menubar/Menubar';
 import './TextEditor.css';
 import Logo from '/icon-text-editor.png';
-
-const SAVE_INTERVAL_MS = 2000;
 
 const TOOLBAR_OPTIONS = [
   [{ font: [] }, { size: [] }],
@@ -32,7 +30,7 @@ export default function TextEditor() {
   }>();
   const [cursor, setCursor] = useState<Cursor>();
   const { id: documentId } = useParams();
-  const [currentFile, setCurrentFile] = useState<string>('untitled');
+  const [fileName, setFileName] = useState<string>('untitled');
 
   useEffect(() => {
     const s = io('http://localhost:3000');
@@ -46,10 +44,14 @@ export default function TextEditor() {
     const quill = editor?.quill;
     if (socket == null || quill == null) return;
 
-    socket.once('load-document', (document: Delta) => {
-      quill.setContents(document);
-      quill.enable();
-    });
+    socket.once(
+      'load-document',
+      (document: { data: Delta; fileName: string }) => {
+        quill.setContents(document.data);
+        setFileName(document.fileName);
+        quill.enable();
+      }
+    );
 
     socket.emit('get-document', documentId);
   }, [socket, editor, documentId]);
@@ -58,21 +60,11 @@ export default function TextEditor() {
     const quill = editor?.quill;
     if (socket == null || quill == null) return;
 
-    const interval = setInterval(() => {
-      socket.emit('save-document', quill.getContents());
-    }, SAVE_INTERVAL_MS);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [socket, editor]);
-
-  useEffect(() => {
-    const quill = editor?.quill;
-    if (socket == null || quill == null) return;
-
-    const handler = (delta: Delta) => {
-      quill.updateContents(delta);
+    const handler = (document: { fileName: string; delta: Delta }) => {
+      quill.updateContents(document.delta);
+      if (document.fileName) {
+        setFileName(document.fileName);
+      }
     };
     socket.on('receive-changes', handler);
 
@@ -87,7 +79,7 @@ export default function TextEditor() {
 
     const handler = (delta: Delta, _oldDelta: Delta, source: string) => {
       if (source !== 'user') return;
-      socket.emit('send-changes', delta);
+      socket.emit('send-changes', { delta, data: quill.getContents() });
     };
     quill.on('text-change', handler);
 
@@ -177,13 +169,18 @@ export default function TextEditor() {
         ></img>
         <div className="toolbar">
           <input
+            type="text"
             style={{ padding: '15px 15px 0' }}
-            defaultValue={currentFile}
+            value={fileName}
+            onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+              setFileName(e.target.value);
+              socket?.emit('send-changes', { fileName: e.target.value });
+            }}
           />
           <MenubarComponent
             quill={editor?.quill}
-            currentFile={currentFile}
-            setCurrentFile={setCurrentFile}
+            fileName={fileName}
+            setFileName={setFileName}
           />
         </div>
       </div>

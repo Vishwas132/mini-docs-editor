@@ -15,16 +15,14 @@ const io = new Server(httpServer, {
 
 io.on('connection', socket => {
   socket.on('get-document', async documentId => {
-    const document = await findOrCreateDocument(documentId);
+    if (documentId == null) return;
+    const newDocument = await findOrCreateDocument(documentId);
     socket.join(documentId);
-    socket.emit('load-document', document?.data);
+    socket.emit('load-document', newDocument);
 
-    socket.on('send-changes', delta => {
-      socket.broadcast.to(documentId).emit('receive-changes', delta);
-    });
-
-    socket.on('save-document', async data => {
-      await Document.findByIdAndUpdate(documentId, { data });
+    socket.on('send-changes', async document => {
+      socket.broadcast.to(documentId).emit('receive-changes', document);
+      await Document.findByIdAndUpdate(documentId, document);
     });
 
     socket.on('cursor-move', cursor => {
@@ -33,13 +31,17 @@ io.on('connection', socket => {
   });
 });
 
-async function findOrCreateDocument(id: string | null) {
-  if (id == null) return;
+async function findOrCreateDocument(documentId: string) {
+  if (documentId == null) return;
 
-  const document = await Document.findById(id);
-  if (document) return document;
-  const data = {};
-  return await Document.create({ _id: id, data });
+  const existingDocument = await Document.findById(documentId);
+  if (existingDocument) return existingDocument;
+
+  return await Document.create({
+    _id: documentId,
+    fileName: 'untitled',
+    data: {},
+  });
 }
 
 app.get('/', (req, res) => {

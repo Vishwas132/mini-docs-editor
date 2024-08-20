@@ -8,12 +8,12 @@ const CHECK_ITEMS = ['Always Show Bookmarks Bar', 'Always Show Full URLs'];
 
 const MenubarComponent = ({
   quill,
-  currentFile,
-  setCurrentFile,
+  fileName,
+  setFileName,
 }: {
   quill: Quill | undefined;
-  currentFile: string;
-  setCurrentFile: (fileName: React.SetStateAction<string>) => void;
+  fileName: string;
+  setFileName: (fileName: React.SetStateAction<string>) => void;
 }) => {
   const [checkedSelection, setCheckedSelection] = useState([CHECK_ITEMS[1]]);
 
@@ -37,7 +37,7 @@ const MenubarComponent = ({
             quill.clipboard.convert({ text: contents as string }),
             'user'
           );
-          setCurrentFile(file.name);
+          setFileName(file.name);
         };
         reader.readAsText(file);
       }
@@ -52,7 +52,7 @@ const MenubarComponent = ({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = currentFile || '';
+      a.download = fileName || '';
       a.click();
       URL.revokeObjectURL(url);
     }
