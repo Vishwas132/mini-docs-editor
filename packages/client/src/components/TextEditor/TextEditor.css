@@ -35,12 +35,6 @@ body {
   margin: 0 1rem;
 }
 
-.ql-cursor .ql-cursor-flag {
-  opacity: 1;
-  visibility: visible;
-  transition: none;
-}
-
 @page {
   margin: 1in;
 }
