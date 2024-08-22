@@ -179,11 +179,7 @@ export default function TextEditor() {
               socket?.emit('send-changes', { fileName: e.target.value });
             }}
           />
-          <MenubarComponent
-            quill={editor?.quill}
-            fileName={fileName}
-            setFileName={setFileName}
-          />
+          <MenubarComponent quill={editor?.quill} fileName={fileName} />
         </div>
       </div>
       <div className="container" ref={wrapperRef}></div>

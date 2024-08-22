@@ -20,9 +20,16 @@ io.on('connection', socket => {
     socket.join(documentId);
     socket.emit('load-document', newDocument);
 
-    socket.on('send-changes', async document => {
+    socket.on('send-changes', async (document, callback) => {
       socket.broadcast.to(documentId).emit('receive-changes', document);
-      await Document.findByIdAndUpdate(documentId, document);
+      if (!document?._id) {
+        await Document.findByIdAndUpdate(documentId, document);
+      } else {
+        const newDocument = await Document.create(document);
+        if (newDocument) {
+          callback({ status: 'success', _id: newDocument._id });
+        }
+      }
     });
 
     socket.on('cursor-move', cursor => {

@@ -3,24 +3,21 @@ import * as Menubar from '@radix-ui/react-menubar';
 import { CheckIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import './Menubar.css';
 import Quill from 'quill';
+import { v4 as uuidV4 } from 'uuid';
 
 const CHECK_ITEMS = ['Always Show Bookmarks Bar', 'Always Show Full URLs'];
 
 const MenubarComponent = ({
   quill,
   fileName,
-  setFileName,
 }: {
   quill: Quill | undefined;
   fileName: string;
-  setFileName: (fileName: React.SetStateAction<string>) => void;
 }) => {
   const [checkedSelection, setCheckedSelection] = useState([CHECK_ITEMS[1]]);
 
   const handleNew = () => {
-    if (quill) {
-      quill.setContents([]);
-    }
+    window.open(`http://localhost:5173/documents/${uuidV4()}`, '_blank');
   };
 
   const handleOpen = () => {
@@ -33,11 +30,20 @@ const MenubarComponent = ({
         const reader = new FileReader();
         reader.onload = (event: ProgressEvent<FileReader>) => {
           const contents = event?.target?.result?.toString();
-          quill?.setContents(
-            quill.clipboard.convert({ text: contents as string }),
-            'user'
+          const data = quill?.clipboard.convert({ text: contents as string });
+          const uuid = uuidV4();
+          socket?.emit(
+            'send-changes',
+            { _id: uuid, fileName: file.name, data },
+            (response: { status: string; _id: string }) => {
+              if (response?.status === 'success') {
+                window.open(
+                  'http://localhost:5173/documents/' + response?._id,
+                  '_blank'
+                );
+              }
+            }
           );
-          setFileName(file.name);
         };
         reader.readAsText(file);
       }
