@@ -9,6 +9,8 @@ import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
 import MenubarComponent from '../Menubar/Menubar';
 import './TextEditor.css';
 import Logo from '/icon-text-editor.png';
+import Spinner from 'react-bootstrap/Spinner';
+import CloudIcon from '/cloud-icon.png';
 
 const TOOLBAR_OPTIONS = [
   [{ font: [] }, { size: [] }],
@@ -31,6 +33,7 @@ export default function TextEditor() {
   const [cursor, setCursor] = useState<Cursor>();
   const { id: documentId } = useParams();
   const [fileName, setFileName] = useState<string>('untitled');
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   useEffect(() => {
     const s = io('http://localhost:3000');
@@ -79,7 +82,18 @@ export default function TextEditor() {
 
     const handler = (delta: Delta, _oldDelta: Delta, source: string) => {
       if (source !== 'user') return;
-      socket.emit('send-changes', { delta, data: quill.getContents() });
+      setIsSaving(true);
+      socket.emit(
+        'send-changes',
+        { delta, data: quill.getContents() },
+        (response: { status: string; _id: string }) => {
+          if (response?.status === 'success') {
+            setTimeout(() => {
+              setIsSaving(false);
+            }, 1000);
+          }
+        }
+      );
     };
     quill.on('text-change', handler);
 
@@ -176,9 +190,33 @@ export default function TextEditor() {
             value={fileName}
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               setFileName(e.target.value);
-              socket?.emit('send-changes', { fileName: e.target.value });
+              setIsSaving(true);
+              socket?.emit(
+                'send-changes',
+                { fileName: e.target.value },
+                (response: { status: string; _id: string }) => {
+                  if (response?.status === 'success') {
+                    setTimeout(() => {
+                      setIsSaving(false);
+                    }, 1000);
+                  }
+                }
+              );
             }}
           />
+          {isSaving ? (
+            <Spinner
+              animation="border"
+              role="status"
+              size="sm"
+              style={{ marginLeft: '10px' }}
+            />
+          ) : (
+            <img
+              src={CloudIcon}
+              style={{ width: '20px', height: '20px', marginLeft: '10px' }}
+            ></img>
+          )}
           <MenubarComponent quill={editor?.quill} fileName={fileName} />
         </div>
       </div>

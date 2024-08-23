@@ -23,7 +23,13 @@ io.on('connection', socket => {
     socket.on('send-changes', async (document, callback) => {
       socket.broadcast.to(documentId).emit('receive-changes', document);
       if (!document?._id) {
-        await Document.findByIdAndUpdate(documentId, document);
+        const foundDocument = await Document.findByIdAndUpdate(
+          documentId,
+          document
+        );
+        if (foundDocument) {
+          callback({ status: 'success', _id: foundDocument._id });
+        }
       } else {
         const newDocument = await Document.create(document);
         if (newDocument) {
