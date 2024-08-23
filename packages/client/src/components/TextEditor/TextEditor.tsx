@@ -217,7 +217,11 @@ export default function TextEditor() {
               style={{ width: '20px', height: '20px', marginLeft: '10px' }}
             ></img>
           )}
-          <MenubarComponent quill={editor?.quill} fileName={fileName} />
+          <MenubarComponent
+            socket={socket}
+            quill={editor?.quill}
+            fileName={fileName}
+          />
         </div>
       </div>
       <div className="container" ref={wrapperRef}></div>

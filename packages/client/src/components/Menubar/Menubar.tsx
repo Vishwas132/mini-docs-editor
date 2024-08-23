@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import * as Menubar from '@radix-ui/react-menubar';
 import { CheckIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import './Menubar.css';
 import Quill from 'quill';
+import html2pdf from 'html2pdf.js';
+import { Socket } from 'socket.io-client';
 import { v4 as uuidV4 } from 'uuid';
 
 const CHECK_ITEMS = ['Always Show Bookmarks Bar', 'Always Show Full URLs'];
 
 const MenubarComponent = ({
+  socket,
   quill,
   fileName,
 }: {
+  socket: Socket | undefined;
   quill: Quill | undefined;
   fileName: string;
 }) => {
@@ -23,7 +27,7 @@ const MenubarComponent = ({
   const handleOpen = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.txt, .html';
+    input.accept = '.txt, .html .pdf .md .rtf';
     input.onchange = (e: Event) => {
       const file = e?.target?.files?.[0];
       if (file) {
@@ -51,7 +55,7 @@ const MenubarComponent = ({
     input.click();
   };
 
-  const handleDownload = () => {
+  const downloadAsText = () => {
     if (quill) {
       const content = quill.getText();
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -64,18 +68,33 @@ const MenubarComponent = ({
     }
   };
 
-  // const handleSaveAs = () => {
-  //   if (quill) {
-  //     const content = quill.root.innerHTML;
-  //     const blob = new Blob([content]);
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = 'document.html';
-  //     a.click();
-  //     URL.revokeObjectURL(url);
-  //   }
-  // };
+  const downloadAsPdf = () => {
+    if (quill) {
+      const element = document.querySelector('.ql-editor');
+      console.log(element);
+      const options = {
+        filename: 'my-document.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      };
+      html2pdf().set(options).from(element).save();
+    }
+  };
+
+  const handleDownloadAs = (e: MouseEvent) => {
+    switch (e.target.id) {
+      case 'txt':
+        downloadAsText();
+        break;
+
+      case 'pdf':
+        downloadAsPdf();
+        break;
+
+      default:
+        break;
+    }
+  };
 
   return (
     <Menubar.Root className="MenubarRoot">
@@ -89,14 +108,14 @@ const MenubarComponent = ({
             alignOffset={-3}
           >
             <Menubar.Item className="MenubarItem" onClick={handleNew}>
-              New<div className="RightSlot">⌘ T</div>
+              New<div className="RightSlot">Ctrl+T</div>
             </Menubar.Item>
             <Menubar.Item className="MenubarItem" onClick={handleOpen}>
-              Open <div className="RightSlot">⌘ O</div>
+              Upload <div className="RightSlot">Ctrl+U</div>
             </Menubar.Item>
             <Menubar.Sub>
               <Menubar.SubTrigger className="MenubarSubTrigger">
-                Download
+                Download As
                 <div className="RightSlot">
                   <ChevronRightIcon />
                 </div>
@@ -108,26 +127,47 @@ const MenubarComponent = ({
                   alignOffset={-5}
                 >
                   <Menubar.Item
+                    id="txt"
                     className="MenubarItem"
-                    onClick={handleDownload}
+                    onClick={handleDownloadAs}
                   >
                     Plain Text (.txt)
                   </Menubar.Item>
-                  {/* <Menubar.Item className="MenubarItem" onClick={handleSaveAs}>
+                  <Menubar.Item
+                    id="html"
+                    className="MenubarItem"
+                    onClick={handleDownloadAs}
+                  >
                     HTML Document (.html)
                   </Menubar.Item>
-                  <Menubar.Item className="MenubarItem" onClick={handleSave}>
+                  <Menubar.Item
+                    id="docx"
+                    className="MenubarItem"
+                    onClick={handleDownloadAs}
+                  >
                     Microsoft Word (.docx)
                   </Menubar.Item>
-                  <Menubar.Item className="MenubarItem" onClick={handleSaveAs}>
+                  <Menubar.Item
+                    id="pdf"
+                    className="MenubarItem"
+                    onClick={handleDownloadAs}
+                  >
                     PDF Document (.pdf)
                   </Menubar.Item>
-                  <Menubar.Item className="MenubarItem" onClick={handleSaveAs}>
+                  <Menubar.Item
+                    id="md"
+                    className="MenubarItem"
+                    onClick={handleDownloadAs}
+                  >
                     Markdown Document (.md)
                   </Menubar.Item>
-                  <Menubar.Item className="MenubarItem" onClick={handleSaveAs}>
+                  <Menubar.Item
+                    id="rtf"
+                    className="MenubarItem"
+                    onClick={handleDownloadAs}
+                  >
                     Rich Text (.rtf)
-                  </Menubar.Item> */}
+                  </Menubar.Item>
                 </Menubar.SubContent>
               </Menubar.Portal>
             </Menubar.Sub>
