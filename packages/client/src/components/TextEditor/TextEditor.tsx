@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Quill from '../../quillConfig';
 import 'quill/dist/quill.snow.css';
 import { io, Socket } from 'socket.io-client';
@@ -6,11 +6,8 @@ import { Delta } from 'quill/core';
 import { useParams } from 'react-router-dom';
 import QuillCursors, { Cursor } from 'quill-cursors';
 import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
-import MenubarComponent from '../Menubar/Menubar';
 import './TextEditor.css';
-import Logo from '/icon-text-editor.png';
-import Spinner from 'react-bootstrap/Spinner';
-import CloudIcon from '/cloud-icon.png';
+import Header from '../Header/Header';
 
 const TOOLBAR_OPTIONS = [
   [{ font: [] }, { size: [] }],
@@ -69,10 +66,10 @@ export default function TextEditor() {
         setFileName(document.fileName);
       }
     };
-    socket.on('receive-changes', handler);
+    socket.on('changes-to-client', handler);
 
     return () => {
-      socket.off('receive-changes', handler);
+      socket.off('changes-to-client', handler);
     };
   }, [socket, editor]);
 
@@ -84,7 +81,7 @@ export default function TextEditor() {
       if (source !== 'user') return;
       setIsSaving(true);
       socket.emit(
-        'send-changes',
+        'changes-to-server',
         { delta, data: quill.getContents() },
         (response: { status: string; _id: string }) => {
           if (response?.status === 'success') {
@@ -176,54 +173,14 @@ export default function TextEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', marginLeft: '1rem' }}>
-        <img
-          src={Logo}
-          style={{ width: '40px', height: '40px', marginTop: '25px' }}
-        ></img>
-        <div className="toolbar">
-          <input
-            type="text"
-            className="filename-input"
-            title="Rename"
-            style={{ width: `${fileName.length * 11}px` }}
-            value={fileName}
-            onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-              setFileName(e.target.value);
-              setIsSaving(true);
-              socket?.emit(
-                'send-changes',
-                { fileName: e.target.value },
-                (response: { status: string; _id: string }) => {
-                  if (response?.status === 'success') {
-                    setTimeout(() => {
-                      setIsSaving(false);
-                    }, 1000);
-                  }
-                }
-              );
-            }}
-          />
-          {isSaving ? (
-            <Spinner
-              animation="border"
-              role="status"
-              size="sm"
-              style={{ marginLeft: '10px' }}
-            />
-          ) : (
-            <img
-              src={CloudIcon}
-              style={{ width: '20px', height: '20px', marginLeft: '10px' }}
-            ></img>
-          )}
-          <MenubarComponent
-            socket={socket}
-            quill={editor?.quill}
-            fileName={fileName}
-          />
-        </div>
-      </div>
+      <Header
+        fileName={fileName}
+        setFileName={setFileName}
+        isSaving={isSaving}
+        setIsSaving={setIsSaving}
+        socket={socket}
+        editor={editor}
+      ></Header>
       <div className="container" ref={wrapperRef}></div>
     </div>
   );

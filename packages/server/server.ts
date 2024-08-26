@@ -20,8 +20,8 @@ io.on('connection', socket => {
     socket.join(documentId);
     socket.emit('load-document', newDocument);
 
-    socket.on('send-changes', async (document, callback) => {
-      socket.broadcast.to(documentId).emit('receive-changes', document);
+    socket.on('changes-to-server', async (document, callback) => {
+      socket.broadcast.to(documentId).emit('changes-to-client', document);
       if (!document?._id) {
         const foundDocument = await Document.findByIdAndUpdate(
           documentId,

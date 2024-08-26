@@ -2,22 +2,13 @@ import { MouseEvent, useState } from 'react';
 import * as Menubar from '@radix-ui/react-menubar';
 import { CheckIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import './Menubar.css';
-import Quill from 'quill';
 import html2pdf from 'html2pdf.js';
-import { Socket } from 'socket.io-client';
 import { v4 as uuidV4 } from 'uuid';
+import { MenubarProps } from '../../types/types';
 
 const CHECK_ITEMS = ['Always Show Bookmarks Bar', 'Always Show Full URLs'];
 
-const MenubarComponent = ({
-  socket,
-  quill,
-  fileName,
-}: {
-  socket: Socket | undefined;
-  quill: Quill | undefined;
-  fileName: string;
-}) => {
+const MenubarComponent = ({ socket, quill, fileName }: MenubarProps) => {
   const [checkedSelection, setCheckedSelection] = useState([CHECK_ITEMS[1]]);
 
   const handleNew = () => {
