@@ -1,15 +1,10 @@
 import { Schema, model } from 'mongoose';
+import { IDocument } from '../types/types.d';
 
-interface IDocument {
-  _id: string;
-  fileName: string;
-  data: object;
-}
-
-const Document = new Schema<IDocument>({
+const DocumentModel = new Schema<IDocument>({
   _id: String,
   fileName: String,
   data: Object,
 });
 
-export default model<IDocument>('Document', Document);
+export default model<IDocument>('Document', DocumentModel);
