@@ -30,16 +30,11 @@ io.on('connection', (socket: Socket) => {
       ) => {
         socket.broadcast.to(documentId).emit('changes-to-client', document);
         try {
-          let updatedDocument: IDocument | null;
-          if (document._id) {
-            updatedDocument = await Document.findByIdAndUpdate(
-              documentId,
-              document,
-              { new: true }
-            );
-          } else {
-            updatedDocument = await Document.create(document);
-          }
+          const updatedDocument = await Document.findByIdAndUpdate(
+            documentId,
+            document,
+            { new: true }
+          );
 
           if (updatedDocument) {
             callback({ status: 'success', _id: updatedDocument._id });
@@ -64,7 +59,8 @@ async function findOrCreateDocument(
 ): Promise<IDocument | null> {
   if (!documentId) return null;
 
-  const existingDocument = await Document.findById(documentId);
+  const existingDocument: IDocument | null =
+    await Document.findById(documentId);
   if (existingDocument) return existingDocument;
 
   return await Document.create({
