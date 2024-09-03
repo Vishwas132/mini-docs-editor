@@ -7,11 +7,9 @@ import { IDocument } from './types/types.d.js';
 import { Socket } from 'socket.io';
 
 const { NODE_ENV } = process.env;
-let { CLIENT_ADDRESS, SERVER_ADDRESS } = process.env;
+let { CLIENT_ADDRESS } = process.env;
 CLIENT_ADDRESS =
   NODE_ENV === 'production' ? CLIENT_ADDRESS : 'http://localhost:5173';
-SERVER_ADDRESS =
-  NODE_ENV === 'production' ? SERVER_ADDRESS : 'http://localhost:3000';
 const PORT = process.env.PORT || 3000;
 
 const app: Express = express();
@@ -85,7 +83,7 @@ app.get('/', (req, res) => {
 async function startServer() {
   await connectDb();
   httpServer.listen(PORT, () => {
-    console.log(`Server running at ${SERVER_ADDRESS}`);
+    console.log(`Server started on port ${PORT}`);
   });
 }
 
