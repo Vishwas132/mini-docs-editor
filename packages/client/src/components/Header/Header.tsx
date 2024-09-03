@@ -30,13 +30,13 @@ export default function Header({
             setFileName(e.target.value);
             setIsSaving(true);
             socket?.emit(
-              'send-changes',
+              'changes-to-server',
               { fileName: e.target.value },
               (response: { status: string; _id: string }) => {
                 if (response?.status === 'success') {
                   setTimeout(() => {
                     setIsSaving(false);
-                  }, 1000);
+                  }, 500);
                 }
               }
             );

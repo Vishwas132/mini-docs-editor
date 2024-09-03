@@ -95,7 +95,7 @@ export default function TextEditor() {
           if (response?.status === 'success') {
             setTimeout(() => {
               setIsSaving(false);
-            }, 1000);
+            }, 500);
           }
         }
       );
