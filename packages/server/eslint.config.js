@@ -13,6 +13,18 @@ export default tseslint.config(
         ...globals.node,
       },
     },
-    ignores: ['**/*.d.ts', '**/node_modules/', '**/dist/'],
+  },
+  {
+    ignores: [
+      '**/*.d.ts',
+      '**/*.d.tsx',
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/node_modules/',
+      '**/dist/',
+      '**/*.min.js',
+      '**/*.min.css',
+      '**/*.json',
+    ],
   }
 );

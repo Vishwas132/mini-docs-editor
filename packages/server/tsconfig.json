@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "composite": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "skipLibCheck": true,
     "module": "ESNext",
     "target": "ES2017",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noEmit": true
-  }
+    "outDir": "dist"
+  },
+  "exclude": ["node_modules/**/*", "dist/**/*"]
 }

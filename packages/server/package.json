@@ -1,20 +1,21 @@
 {
   "name": "@mini-docs-editor/server",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is the server for mini-docs-editor.",
   "main": "index.js",
   "type": "module",
+  "keywords": [],
+  "author": "Vishwas Lekhwar",
+  "license": "ISC",
   "scripts": {
     "dev": "tsx watch server.ts",
+    "start:prod": "node dist/server.js",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "format": "prettier --write ."
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",

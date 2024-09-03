@@ -9,6 +9,12 @@ import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
 import './TextEditor.css';
 import Header from '../Header/Header';
 
+const { NODE_ENV, CLIENT_ADDRESS } = import.meta.env;
+const serverAddress =
+  NODE_ENV === 'production'
+    ? (CLIENT_ADDRESS as string)
+    : 'http://localhost:3000';
+
 const TOOLBAR_OPTIONS = [
   [{ font: [] }, { size: [] }],
   ['bold', 'italic', 'underline', 'strike'],
@@ -33,7 +39,7 @@ export default function TextEditor() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   useEffect(() => {
-    const s = io('http://localhost:3000');
+    const s = io(serverAddress);
     setSocket(s);
     return () => {
       s.disconnect();

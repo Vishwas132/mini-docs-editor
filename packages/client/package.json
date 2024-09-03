@@ -1,11 +1,14 @@
 {
   "name": "@mini-docs-editor/client",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "keywords": [],
+  "author": "Vishwas Lekhwar",
+  "license": "ISC",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "format": "prettier --write .",

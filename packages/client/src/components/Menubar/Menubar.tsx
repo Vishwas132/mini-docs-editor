@@ -6,13 +6,18 @@ import html2pdf from 'html2pdf.js';
 import { v4 as uuidV4 } from 'uuid';
 import { MenubarProps } from '../../types/types';
 
+const { NODE_ENV, CLIENT_ADDRESS } = import.meta.env;
+const clientAddress =
+  NODE_ENV === 'production'
+    ? (CLIENT_ADDRESS as string)
+    : 'http://localhost:5173';
 const CHECK_ITEMS = ['Always Show Bookmarks Bar', 'Always Show Full URLs'];
 
 const MenubarComponent = ({ socket, quill, fileName }: MenubarProps) => {
   const [checkedSelection, setCheckedSelection] = useState([CHECK_ITEMS[1]]);
 
   const handleNew = () => {
-    window.open(`http://localhost:5173/documents/${uuidV4()}`, '_blank');
+    window.open(`${clientAddress}/documents/${uuidV4()}`, '_blank');
   };
 
   const handleOpen = () => {
@@ -33,7 +38,7 @@ const MenubarComponent = ({ socket, quill, fileName }: MenubarProps) => {
             (response: { status: string; _id: string }) => {
               if (response?.status === 'success') {
                 window.open(
-                  'http://localhost:5173/documents/' + response?._id,
+                  `${clientAddress}/documents/${response?._id}`,
                   '_blank'
                 );
               }

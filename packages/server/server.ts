@@ -1,16 +1,24 @@
 import express, { Express } from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-import { connectDb } from './config/dbConfig';
-import { Document } from './models';
-import { IDocument } from './types/types.d';
+import { connectDb } from './config/dbConfig.js';
+import { Document } from './models/index.js';
+import { IDocument } from './types/types.d.js';
 import { Socket } from 'socket.io';
+
+const { NODE_ENV } = process.env;
+let { CLIENT_ADDRESS, SERVER_ADDRESS } = process.env;
+CLIENT_ADDRESS =
+  NODE_ENV === 'production' ? CLIENT_ADDRESS : 'http://localhost:4173';
+SERVER_ADDRESS =
+  NODE_ENV === 'production' ? SERVER_ADDRESS : 'http://localhost:3000';
+const PORT = process.env.PORT || 3000;
 
 const app: Express = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: CLIENT_ADDRESS,
     methods: ['GET', 'POST'],
   },
 });
@@ -76,8 +84,8 @@ app.get('/', (req, res) => {
 
 async function startServer() {
   await connectDb();
-  httpServer.listen(3000, () => {
-    console.log('Server running at http://localhost:3000');
+  httpServer.listen(PORT, () => {
+    console.log(`Server running at ${SERVER_ADDRESS}`);
   });
 }
 
