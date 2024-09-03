@@ -9,10 +9,10 @@ import IQuillRange from 'quill-cursors/dist/quill-cursors/i-range';
 import './TextEditor.css';
 import Header from '../Header/Header';
 
-const { NODE_ENV, CLIENT_ADDRESS } = import.meta.env;
+const { NODE_ENV, SERVER_ADDRESS } = import.meta.env;
 const serverAddress =
   NODE_ENV === 'production'
-    ? (CLIENT_ADDRESS as string)
+    ? (SERVER_ADDRESS as string)
     : 'http://localhost:3000';
 
 const TOOLBAR_OPTIONS = [

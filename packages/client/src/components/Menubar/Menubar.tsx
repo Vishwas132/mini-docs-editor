@@ -6,11 +6,8 @@ import html2pdf from 'html2pdf.js';
 import { v4 as uuidV4 } from 'uuid';
 import { MenubarProps } from '../../types/types';
 
-const { NODE_ENV, CLIENT_ADDRESS } = import.meta.env;
-const clientAddress =
-  NODE_ENV === 'production'
-    ? (CLIENT_ADDRESS as string)
-    : 'http://localhost:5173';
+const clientAddress = window.location.href.split('/document')[0];
+
 const CHECK_ITEMS = ['Always Show Bookmarks Bar', 'Always Show Full URLs'];
 
 const MenubarComponent = ({ socket, quill, fileName }: MenubarProps) => {
