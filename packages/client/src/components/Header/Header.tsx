@@ -1,5 +1,5 @@
 import MenubarComponent from '../Menubar/Menubar';
-import Logo from '/icon-text-editor.png';
+import Logo from '/text-editor-icon.png';
 import Spinner from 'react-bootstrap/Spinner';
 import CloudIcon from '/cloud-icon.png';
 import { ChangeEvent } from 'react';
