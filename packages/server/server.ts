@@ -5,6 +5,46 @@ import { connectDb } from './config/dbConfig.js';
 import { Document } from './models/index.js';
 import { IDocument } from './types/types.d.js';
 import { Socket } from 'socket.io';
+import NodeCache from 'node-cache';
+
+const cache = new NodeCache();
+
+async function refreshCache() {
+  try {
+    cache.flushAll();
+    // Fetch all documents or use a query to fetch only what's needed
+    const documents = await Document.find().lean();
+
+    documents.forEach(doc => {
+      cache.set(doc._id, doc);
+    });
+
+    console.log('Cache refreshed successfully');
+  } catch (error) {
+    console.error('Error refreshing cache:', error);
+  }
+}
+
+// Refresh cache every 5 minutes
+setInterval(refreshCache, 5 * 60 * 1000);
+
+// Initial cache population
+refreshCache();
+
+async function getCachedData(
+  key: string | number,
+  fetchFunction: () => Promise<IDocument | null>
+) {
+  const cachedData = cache.get(key);
+
+  if (cachedData) {
+    return cachedData;
+  }
+
+  const freshData = await fetchFunction();
+  cache.set(key, freshData);
+  return freshData;
+}
 
 const { NODE_ENV } = process.env;
 let { CLIENT_ADDRESS } = process.env;
@@ -24,9 +64,13 @@ const io = new Server(httpServer, {
 io.on('connection', (socket: Socket) => {
   socket.on('get-document', async (documentId: string) => {
     if (!documentId) return;
-    const newDocument = await findOrCreateDocument(documentId);
-    socket.join(documentId);
-    socket.emit('load-document', newDocument);
+    const newOrExistingDocument = await getCachedData(documentId, async () => {
+      return await findOrCreateDocument(documentId);
+    });
+    if (newOrExistingDocument) {
+      socket.join(documentId);
+      socket.emit('load-document', newOrExistingDocument);
+    }
 
     socket.on(
       'changes-to-server',
@@ -43,8 +87,10 @@ io.on('connection', (socket: Socket) => {
           );
 
           if (updatedDocument) {
+            cache.set(documentId, updatedDocument);
             callback({ status: 'success', _id: updatedDocument._id });
           } else {
+            cache.del(documentId);
             callback({ status: 'error', _id: '' });
           }
         } catch (error) {
