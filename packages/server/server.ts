@@ -5,25 +5,7 @@ import { connectDb } from './config/dbConfig.js';
 import { Document } from './models/index.js';
 import { IDocument } from './types/types.d.js';
 import { Socket } from 'socket.io';
-import NodeCache from 'node-cache';
-
-const cache = new NodeCache();
-
-async function refreshCache() {
-  try {
-    cache.flushAll();
-    // Fetch all documents or use a query to fetch only what's needed
-    const documents = await Document.find().lean();
-
-    documents.forEach(doc => {
-      cache.set(doc._id, doc);
-    });
-
-    console.log('Cache refreshed successfully');
-  } catch (error) {
-    console.error('Error refreshing cache:', error);
-  }
-}
+import { cache, refreshCache } from './cache.js';
 
 // Refresh cache every 5 minutes
 setInterval(refreshCache, 5 * 60 * 1000);
@@ -50,7 +32,7 @@ const { NODE_ENV } = process.env;
 let { CLIENT_ADDRESS } = process.env;
 CLIENT_ADDRESS =
   NODE_ENV === 'production' ? CLIENT_ADDRESS : 'http://localhost:5173';
-const PORT = process.env.PORT || 3000;
+const PORT = (process.env.PORT && parseInt(process.env.PORT)) || 3000;
 
 const app: Express = express();
 const httpServer = createServer(app);
